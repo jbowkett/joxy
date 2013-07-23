@@ -19,7 +19,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 public class ServerStartupStepDefs {
 
 
-    protected WebDriver driver = new ChromeDriver();
+  protected WebDriver driver = new ChromeDriver();
 
 //    @Before
 //    public void setUp() {
@@ -27,36 +27,36 @@ public class ServerStartupStepDefs {
 //    }
 
 
-    @Given("^a joxy server is started$")
-    public void a_joxy_server_is_started() throws Throwable {
-        // Express the Regexp above with the code you wish you had
+  @Given("^a joxy server is started$")
+  public void a_joxy_server_is_started() throws Throwable {
+    // Express the Regexp above with the code you wish you had
 //        throw new PendingException();
-    }
+  }
 
-    @Given("^a web browser configured to use joxy$")
-    public void a_web_browser_configured_to_use_joxy() throws Throwable {
-        // Express the Regexp above with the code you wish you had
+  @Given("^a web browser configured to use joxy$")
+  public void a_web_browser_configured_to_use_joxy() throws Throwable {
+    // Express the Regexp above with the code you wish you had
 //        throw new PendingException();
-    }
+  }
 
-    @When("^I navigate to a website$")
-    public void I_navigate_to_a_website() throws Throwable {
-        // Express the Regexp above with the code you wish you had
-        driver.get("http://www.google.co.uk");
-    }
+  @When("^I navigate to a website$")
+  public void I_navigate_to_a_website() throws Throwable {
+    // Express the Regexp above with the code you wish you had
+    driver.get("http://www.google.co.uk");
+  }
 
-    @Then("^I will see that website in the browser$")
-    public void I_will_see_that_website_in_the_browser() throws Throwable {
-      final String title = driver.getTitle();
-      System.out.println("title = " + title);
-      // Express the Regexp above with the code you wish you had
+  @Then("^I will see that website in the browser$")
+  public void I_will_see_that_website_in_the_browser() throws Throwable {
+    final String title = driver.getTitle();
+    System.out.println("title = " + title);
+    // Express the Regexp above with the code you wish you had
 //        throw new PendingException();
-    }
+  }
 
-    @After
-    public void tearDown() {
-        driver.close();
-    }
+  @After
+  public void tearDown() {
+    driver.close();
+  }
 
 
 }

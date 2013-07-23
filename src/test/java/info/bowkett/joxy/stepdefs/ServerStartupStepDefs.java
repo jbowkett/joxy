@@ -1,5 +1,6 @@
 package info.bowkett.joxy.stepdefs;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -57,8 +58,39 @@ public class ServerStartupStepDefs {
     Assert.assertNotNull(title);
   }
 
+  @Given("^a joxy server is started with a title augmenter$")
+  public void a_joxy_server_is_started_with_a_title_augmenter() throws Throwable {
+    // Express the Regexp above with the code you wish you had
+    throw new PendingException();
+  }
+
+  @Then("^I will see a message in the html title$")
+  public void I_will_see_a_message_in_the_html_title() throws Throwable {
+    // Express the Regexp above with the code you wish you had
+    throw new PendingException();
+  }
+
+  @Given("^a joxy server is started with an adult content URL filter$")
+  public void a_joxy_server_is_started_with_an_adult_content_URL_filter() throws Throwable {
+    // Express the Regexp above with the code you wish you had
+    throw new PendingException();
+  }
+
+  @When("^I navigate to \"([^\"]*)\"$")
+  public void I_navigate_to(String arg1) throws Throwable {
+    // Express the Regexp above with the code you wish you had
+    throw new PendingException();
+  }
+
+  @Then("^I will see a permission denied message$")
+  public void I_will_see_a_permission_denied_message() throws Throwable {
+    // Express the Regexp above with the code you wish you had
+    throw new PendingException();
+  }
+
   @After
   public void tearDown() {
-    driver.close();
+    if (driver != null) driver.close();
+    if (server != null) server.stop();
   }
 }

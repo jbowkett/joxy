@@ -13,10 +13,14 @@ import java.net.Socket;
  */
 public class Server extends Thread {
   private final int port;
+  private final RequestReader requestReader;
+  private RequestParser requestParser;
   private volatile boolean listen = false;
 
-  public Server(int port) {
+  public Server(int port, RequestReader requestReader, RequestParser requestParser) {
     this.port = port;
+    this.requestReader = requestReader;
+    this.requestParser = requestParser;
   }
 
   @Override
@@ -28,7 +32,9 @@ public class Server extends Thread {
 
       while(listen){
         final Socket incomingConnection = serverSocket.accept();
-        
+        final String requestStr = requestReader.readRequest(incomingConnection);
+        final Request request = requestParser.parseRequest(requestStr);
+
       }
 
       serverSocket.close();
@@ -42,4 +48,11 @@ public class Server extends Thread {
   public void shutdown() {
     listen = false;
   }
+
+  public static void main(String [] args){
+    final Server server = new Server(4443, new RequestReader(), new RequestParser());
+    server.start();
+  }
+
+
 }

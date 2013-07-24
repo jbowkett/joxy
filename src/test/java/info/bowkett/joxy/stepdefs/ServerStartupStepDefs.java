@@ -33,6 +33,7 @@ public class ServerStartupStepDefs {
   private static final int PROXY_SERVER_PORT = 4443;
   private static ChromeDriverService driverService;
 
+//  todo: sort this into a @Beforeclass method
   static {
     driverService = new ChromeDriverService.Builder()
       .usingDriverExecutable(new File(System.getProperty("webdriver.chrome.driver")))

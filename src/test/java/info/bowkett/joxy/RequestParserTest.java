@@ -34,7 +34,7 @@ public class RequestParserTest {
   @Test
   public void testParseRequestHost() throws Exception{
     final String actualHost = parser.parseRequest(EXAMPLE_REQUEST).getHost();
-    assertEquals("http://bbc.co.uk", actualHost);
+    assertEquals("bbc.co.uk", actualHost);
   }
 
   @Test
@@ -76,6 +76,6 @@ public class RequestParserTest {
   @Test
   public void testParseRequestCookie() throws Exception{
     final String cookie = parser.parseRequest(EXAMPLE_REQUEST).getCookie();
-    assertEquals("BBC-UID=85e1435a65301d5e45ba067dc1c81a4816f69c1f94c4d16e4a71047eb2b86e280Mozilla/5.0%20(Macintosh%3b%20Intel%20Mac%20OS%20X%2010_8_2)%20AppleWebKit/537.22%20(KHTML%2c%20like%20Gecko)%20Chrome/25.0.1364; ckns_policy=111; BGUID=45a1c35a55302e128ad97c3ec1293be1551e78743e7873c94375ba2da78ee968; s1=513A50E22A2B02D0; ckpf_ww_mobile_js=on; s_cc=true; c=undefinedDirect%20LoadDirect%20Load; s_ev49=%5B%5B'Direct%2520Load'%2C'1373466309553'%5D%5D; s_sq=%5B%5BB%5D%5D; s_sv_sid=1077057091917; rsi_segs=J08781_10057|J08781_10189|J08781_10639|J08781_0; _em_vt=0419aa66bb422ec9acdf2fbd16cd51dd6ec6916284-0340147151dd6ec6\";", cookie);
+    assertEquals("BBC-UID=85e1435a65301d5e45ba067dc1c81a4816f69c1f94c4d16e4a71047eb2b86e280Mozilla/5.0%20(Macintosh%3b%20Intel%20Mac%20OS%20X%2010_8_2)%20AppleWebKit/537.22%20(KHTML%2c%20like%20Gecko)%20Chrome/25.0.1364; ckns_policy=111; BGUID=45a1c35a55302e128ad97c3ec1293be1551e78743e7873c94375ba2da78ee968; s1=513A50E22A2B02D0; ckpf_ww_mobile_js=on; s_cc=true; c=undefinedDirect%20LoadDirect%20Load; s_ev49=%5B%5B'Direct%2520Load'%2C'1373466309553'%5D%5D; s_sq=%5B%5BB%5D%5D; s_sv_sid=1077057091917; rsi_segs=J08781_10057|J08781_10189|J08781_10639|J08781_0; _em_vt=0419aa66bb422ec9acdf2fbd16cd51dd6ec6916284-0340147151dd6ec6", cookie);
   }
 }

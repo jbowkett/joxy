@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
  * To change this template use File | Settings | File Templates.
  */
 public class RequestParser {
+
   public Request parseRequest(String request) {
     final StringTokenizer lines = new StringTokenizer(request, "\n");
     final Map<String, String> values = new HashMap<String, String>();
@@ -30,6 +31,11 @@ public class RequestParser {
       values.get("COOKIE"));
   }
 
+  /**
+   * removes extraneous spaces or colons in the key
+   * @param key
+   * @return
+   */
   private String clean(String key) {
     return key.replaceAll(" |:", "").toUpperCase();
   }

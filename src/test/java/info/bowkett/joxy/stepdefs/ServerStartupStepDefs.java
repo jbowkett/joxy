@@ -9,11 +9,14 @@ import info.bowkett.joxy.RequestParser;
 import info.bowkett.joxy.RequestReader;
 import info.bowkett.joxy.Server;
 import org.junit.Assert;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.util.Arrays;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,11 +31,19 @@ public class ServerStartupStepDefs {
   private WebDriver driver;
   private Server server;
   private static final int PROXY_SERVER_PORT = 4443;
+  private static ChromeDriverService driverService;
 
-//    @Before
-//    public void setUp() {
-//        driver = new ChromeDriver();
-//    }
+  static {
+    driverService = new ChromeDriverService.Builder()
+      .usingDriverExecutable(new File(System.getProperty("webdriver.chrome.driver")))
+      .usingAnyFreePort()
+      .build();
+    try {
+      driverService.start();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
 
   @Given("^a joxy server is started$")
@@ -44,8 +55,13 @@ public class ServerStartupStepDefs {
   @Given("^a web browser configured to use joxy$")
   public void a_web_browser_configured_to_use_joxy() throws Throwable {
     final DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-    capabilities.setCapability("chrome.switches", Arrays.asList("--proxy-server=http://localhost:" + PROXY_SERVER_PORT));
-    driver = new ChromeDriver();
+
+    final Proxy proxy = new Proxy();
+    proxy.setHttpProxy("localhost:" + PROXY_SERVER_PORT);
+
+    capabilities.setCapability("proxy", proxy);
+
+    driver = new RemoteWebDriver(driverService.getUrl(), capabilities);
   }
 
   @When("^I navigate to a website$")

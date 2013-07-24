@@ -13,20 +13,24 @@ import java.util.StringTokenizer;
  */
 public class RequestParser {
   public Request parseRequest(String request) {
-    final StringTokenizer tokenizer = new StringTokenizer(request, "\n");
+    final StringTokenizer lines = new StringTokenizer(request, "\n");
     final Map<String, String> values = new HashMap<String, String>();
-    while(tokenizer.hasMoreElements()){
-      final String line = (String) tokenizer.nextElement();
-      final int index = line.indexOf(' ');
-      if(index > -1){
-        final String key = line.substring(0, index);
-        final String value = line.substring(index +1);
-        values.put(key.replaceAll(" |:", "").toUpperCase(), value);
+    while(lines.hasMoreElements()){
+      final String line = (String) lines.nextElement();
+      final int firstSpaceIndex = line.indexOf(' ');
+      if(firstSpaceIndex > -1){
+        final String key = line.substring(0, firstSpaceIndex);
+        final String value = line.substring(firstSpaceIndex +1);
+        values.put(clean(key), value);
       }
     }
     return new Request(values.get("HOST"), values.get("PROXY-CONNECTION"),
       values.get("CACHE-CONTROL"), values.get("ACCEPT"), values.get("USER-AGENT"),
       values.get("ACCEPT-ENCODING"), values.get("ACCEPT-LANGUAGE"),
       values.get("COOKIE"));
+  }
+
+  private String clean(String key) {
+    return key.replaceAll(" |:", "").toUpperCase();
   }
 }

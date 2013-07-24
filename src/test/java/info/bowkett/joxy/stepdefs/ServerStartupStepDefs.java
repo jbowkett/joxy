@@ -91,6 +91,6 @@ public class ServerStartupStepDefs {
   @After
   public void tearDown() {
     if (driver != null) driver.close();
-    if (server != null) server.stop();
+    if (server != null) server.shutdown();
   }
 }

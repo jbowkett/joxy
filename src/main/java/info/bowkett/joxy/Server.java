@@ -7,20 +7,24 @@ package info.bowkett.joxy;
  * Time: 8:45:58 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Server {
+public class Server extends Thread {
   private final int port;
+  private volatile boolean listen = false;
 
   public Server(int port) {
     this.port = port;
   }
 
-  public void start() {
+  @Override
+  public void run() {
+    listen = true;
 
-    
+    while(listen){
+
+    }
   }
 
-  public void stop() {
-
-    
+  public void shutdown() {
+    listen = false;
   }
 }

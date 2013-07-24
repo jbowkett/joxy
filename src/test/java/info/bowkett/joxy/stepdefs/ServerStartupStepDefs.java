@@ -5,6 +5,8 @@ import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import info.bowkett.joxy.RequestParser;
+import info.bowkett.joxy.RequestReader;
 import info.bowkett.joxy.Server;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
@@ -35,7 +37,7 @@ public class ServerStartupStepDefs {
 
   @Given("^a joxy server is started$")
   public void a_joxy_server_is_started() throws Throwable {
-    server = new Server(PROXY_SERVER_PORT);
+    server = new Server(PROXY_SERVER_PORT, new RequestReader(), new RequestParser());
     server.start();
   }
 

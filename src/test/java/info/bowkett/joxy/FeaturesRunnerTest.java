@@ -1,8 +1,6 @@
 package info.bowkett.joxy;
 
 import cucumber.api.junit.Cucumber;
-import junit.framework.TestCase;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 

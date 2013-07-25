@@ -66,11 +66,6 @@ public class ServerStartupStepDefs {
     driver = new RemoteWebDriver(driverService.getUrl(), capabilities);
   }
 
-  @When("^I navigate to a website$")
-  public void I_navigate_to_a_website() throws Throwable {
-    driver.get("http://www.google.co.uk");
-  }
-
   @Then("^I will see that website in the browser$")
   public void I_will_see_that_website_in_the_browser() throws Throwable {
     final String title = driver.getTitle();
@@ -97,9 +92,8 @@ public class ServerStartupStepDefs {
   }
 
   @When("^I navigate to \"([^\"]*)\"$")
-  public void I_navigate_to(String arg1) throws Throwable {
-    // Express the Regexp above with the code you wish you had
-    throw new PendingException();
+  public void I_navigate_to(String url) throws Throwable {
+    driver.get(url);
   }
 
   @Then("^I will see a permission denied message$")

@@ -1,14 +1,14 @@
-Feature:  Ensure joxy can startup and be used as a proxy¶
+Feature:  Ensure joxy can startup and be used as a proxyï¿½
  Scenario: When  started it starts without an error
  Given a joxy server is started
  And a web browser configured to use joxy
- When I navigate to a website
+ When I navigate to "http://www.google.com"
  Then I will see that website in the browser
 
 Scenario: Augmented browsing
   Given a joxy server is started with a title augmenter
   And a web browser configured to use joxy
-  When I navigate to a website
+  When I navigate to "http://www.google.com"
   Then I will see a message in the html title
 
 Scenario: URL Filtering

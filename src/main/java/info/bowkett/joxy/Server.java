@@ -15,44 +15,60 @@ public class Server extends Thread {
   private final int port;
   private final RequestReader requestReader;
   private RequestParser requestParser;
+  private final RequestServicer requestServicer;
   private volatile boolean listen = false;
 
-  public Server(int port, RequestReader requestReader, RequestParser requestParser) {
+  public Server(int port, RequestReader requestReader, RequestParser requestParser, RequestServicer requestServicer) {
     this.port = port;
     this.requestReader = requestReader;
     this.requestParser = requestParser;
+    this.requestServicer = requestServicer;
   }
 
   @Override
   public void run() {
     listen = true;
-    try{
-      final ServerSocket serverSocket = new ServerSocket(port);
-      System.out.println("Joxy server started on port :["+port+"]...");
+    ServerSocket serverSocket = null;
+    try {
+      serverSocket = new ServerSocket(port);
+      System.out.println("Joxy server started on port :[" + port + "]...");
 
-      while(listen){
+      while (listen) {
         final Socket incomingConnection = serverSocket.accept();
         final String requestStr = requestReader.readRequest(incomingConnection);
         final Request request = requestParser.parseRequest(requestStr);
-
+        requestServicer.service(request, incomingConnection);
       }
-
-      serverSocket.close();
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
       System.err.println("Connectivity Exception :" + e.getMessage());
       e.printStackTrace();
+    }
+    finally {
+      requestServicer.shutdown();
+      try {
+        if (serverSocket != null) serverSocket.close();
+      }
+      catch (Exception e) {}//nothing as closing down anyway
     }
     System.out.println("Joxy server shutdown.");
   }
 
   public void shutdown() {
+    requestServicer.shutdown();
     listen = false;
+    System.out.println("Server shutdown complete.");
   }
 
-  public static void main(String [] args){
-    final Server server = new Server(4443, new RequestReader(), new RequestParser());
+  public static void main(String[] args) {
+    final Server server = new Server(4443, new RequestReader(), new RequestParser(), new RequestServicer(5));
+    Runtime.getRuntime().addShutdownHook(
+      new Thread(new Runnable() {
+        public void run() {
+          server.shutdown();
+        }
+      }, "shutdown hook"));
+
     server.start();
   }
-
-
 }

@@ -1,10 +1,7 @@
 package info.bowkett.joxy;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.Socket;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,24 +11,21 @@ import java.net.Socket;
  * To change this template use File | Settings | File Templates.
  */
 public class RequestReader {
+  private static final int BUFFER_SIZE = 32768;
 
-  public String readRequest(Socket incomingConnection) throws IOException {
-    InputStream incomingInputStream = null;
-    InputStreamReader inputStreamReader = null;
-    BufferedReader in = null;
+  public byte [] readRequest(InputStream incomingInputStream) throws IOException {
+    byte [] request = new byte[0];
     try {
-      incomingInputStream = incomingConnection.getInputStream();
-      inputStreamReader = new InputStreamReader(incomingInputStream);
-      in = new BufferedReader(inputStreamReader);
+      final byte[] buffer = new byte[BUFFER_SIZE];
+      int bytesRead;
 
-      final StringBuilder buffer = new StringBuilder();
-      String inputLine;
-
-      while ((inputLine = in.readLine()) != null) {
-        System.out.println(inputLine);
-        buffer.append(inputLine);
+      do{
+        bytesRead = incomingInputStream.read(buffer, 0, BUFFER_SIZE);
+        request = appendBuffer(request, buffer, bytesRead);
       }
-      return buffer.toString();
+      while (bytesRead != -1 && bytesRead == BUFFER_SIZE);
+
+      return request;
     }
     catch (IOException e) {
       System.out.println("Cannot read from socket:" + e.getMessage());
@@ -39,11 +33,19 @@ public class RequestReader {
     }
     finally {
       try {
-        if (in != null) in.close();
+        if (incomingInputStream != null) incomingInputStream.close();
       }
       catch (Exception e) {
       }//do nothing as closing
     }
   }
 
+  private byte[] appendBuffer(byte[] previouslyBuffered, byte[] bufferToAppend, int bytesRead) {
+    byte[] expandedBuffer = previouslyBuffered;
+    if(bytesRead > -1) {
+      expandedBuffer = new byte[previouslyBuffered.length + bytesRead];
+      System.arraycopy(bufferToAppend, 0, expandedBuffer, previouslyBuffered.length, bytesRead);
+    }
+    return expandedBuffer;
+  }
 }

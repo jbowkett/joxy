@@ -5,10 +5,7 @@ import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import info.bowkett.joxy.RequestParser;
-import info.bowkett.joxy.RequestReader;
-import info.bowkett.joxy.RequestServicer;
-import info.bowkett.joxy.Server;
+import info.bowkett.joxy.*;
 import org.junit.Assert;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
@@ -43,14 +40,15 @@ public class ServerStartupStepDefs {
     try {
       driverService.start();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println("Cannot start driver: "+e.getMessage());
+      e.printStackTrace(System.err);
     }
   }
 
 
   @Given("^a joxy server is started$")
   public void a_joxy_server_is_started() throws Throwable {
-    server = new Server(PROXY_SERVER_PORT, new RequestReader(), new RequestParser(), new RequestServicer(5));
+    server = new Server(PROXY_SERVER_PORT, new RequestReader(), new RequestParser(), new RequestServicer(5, new Filter[0]));
     server.start();
   }
 

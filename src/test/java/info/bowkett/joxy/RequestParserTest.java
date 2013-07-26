@@ -34,7 +34,7 @@ public class RequestParserTest {
   @Test
   public void testParseRequestHost() throws Exception{
     final String actualHost = parser.parseRequest(EXAMPLE_REQUEST).getHost();
-    assertEquals("bbc.co.uk", actualHost);
+    assertEquals("http://bbc.co.uk/", actualHost);
   }
 
   @Test

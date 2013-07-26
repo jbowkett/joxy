@@ -20,8 +20,8 @@ public class RequestParser {
     for (String line : lines) {
       parseLine(values, line);
     }
-    
-    return new Request(values.get("HOST"), values.get("PROXY-CONNECTION"),
+
+    return new Request(values.get("GET"), values.get("PROXY-CONNECTION"),
       values.get("CACHE-CONTROL"), values.get("ACCEPT"), values.get("USER-AGENT"),
       values.get("ACCEPT-ENCODING"), values.get("ACCEPT-LANGUAGE"),
       values.get("COOKIE"));

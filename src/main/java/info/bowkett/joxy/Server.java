@@ -13,15 +13,11 @@ import java.net.Socket;
  */
 public class Server extends Thread {
   private final int port;
-  private final RequestReader requestReader;
-  private RequestParser requestParser;
   private final RequestServicer requestServicer;
   private volatile boolean listen = false;
 
-  public Server(int port, RequestReader requestReader, RequestParser requestParser, RequestServicer requestServicer) {
+  public Server(int port, RequestServicer requestServicer) {
     this.port = port;
-    this.requestReader = requestReader;
-    this.requestParser = requestParser;
     this.requestServicer = requestServicer;
   }
 
@@ -35,9 +31,7 @@ public class Server extends Thread {
 
       while (listen) {
         final Socket incomingConnection = serverSocket.accept();
-        final String requestStr = new String(requestReader.readRequest(incomingConnection.getInputStream()));
-        final Request request = requestParser.parseRequest(requestStr);
-        requestServicer.service(request, incomingConnection, requestReader);
+        requestServicer.service(incomingConnection);
       }
     }
     catch (IOException e) {
@@ -61,7 +55,7 @@ public class Server extends Thread {
   }
 
   public static void main(String[] args) {
-    final Server server = new Server(4443, new RequestReader(), new RequestParser(), new RequestServicer(1, new Filter[0]));
+    final Server server = new Server(4443, new RequestServicer(1, new Filter[0], new RequestReader(), new RequestParser()));
     Runtime.getRuntime().addShutdownHook(
       new Thread(new Runnable() {
         public void run() {

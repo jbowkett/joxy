@@ -48,7 +48,7 @@ public class ServerStartupStepDefs {
 
   @Given("^a joxy server is started$")
   public void a_joxy_server_is_started() throws Throwable {
-    server = new Server(PROXY_SERVER_PORT, new RequestReader(), new RequestParser(), new RequestServicer(5, new Filter[0]));
+    server = new Server(PROXY_SERVER_PORT, new RequestServicer(5, new Filter[0], new RequestReader(), new RequestParser()));
     server.start();
   }
 

@@ -14,12 +14,12 @@ import java.util.concurrent.Executors;
 public class RequestServicer {
 
   private ExecutorService executor;
-  private final Filter[] filters;
   private final RequestReader requestReader;
   private final RequestParser requestParser;
+  private Augmenter augmenter;
 
-  public RequestServicer(int poolSize, Filter[] filters, RequestReader requestReader, RequestParser requestParser) {
-    this.filters = filters;
+  public RequestServicer(int poolSize, RequestReader requestReader, RequestParser requestParser, Augmenter augmenter) {
+    this.augmenter = augmenter;
     this.requestReader = requestReader;
     this.requestParser = requestParser;
     executor = Executors.newFixedThreadPool(poolSize);
@@ -32,7 +32,7 @@ public class RequestServicer {
    * @param proxyClientConnection
    */
   public void service(final Socket proxyClientConnection) {
-    executor.execute(new RequestRunnable(proxyClientConnection, requestReader, requestParser, filters));
+    executor.execute(new RequestRunnable(proxyClientConnection, requestReader, requestParser, augmenter));
   }
 
   public void shutdown() {

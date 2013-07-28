@@ -55,7 +55,7 @@ public class Server extends Thread {
   }
 
   public static void main(String[] args) {
-    final Server server = new Server(4443, new RequestServicer(1, new Filter[0], new RequestReader(), new RequestParser()));
+    final Server server = new Server(4443, new RequestServicer(1, new RequestReader(), new RequestParser(), new Augmenter(new Filter[0])));
     Runtime.getRuntime().addShutdownHook(
       new Thread(new Runnable() {
         public void run() {

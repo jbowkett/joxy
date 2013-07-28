@@ -16,15 +16,16 @@ public class RequestRunnable implements Runnable {
   private final Socket proxyClientConnection;
   private RequestReader requestReader;
   private RequestParser requestParser;
-  private Filter[] filters;
+  private final Augmenter augmenter;
 
   private static final int BUFFER_SIZE = 32768;
 
-  public RequestRunnable(Socket proxyClientConnection, RequestReader requestReader, RequestParser requestParser, Filter[] filters) {
+  public RequestRunnable(Socket proxyClientConnection, RequestReader requestReader,
+                         RequestParser requestParser, Augmenter augmenter) {
     this.proxyClientConnection = proxyClientConnection;
     this.requestReader = requestReader;
     this.requestParser = requestParser;
-    this.filters = filters;
+    this.augmenter = augmenter;
   }
 
   public void run() {
@@ -38,9 +39,7 @@ public class RequestRunnable implements Runnable {
         final InputStream inputStreamFromRemote = makeRemoteRequest(socket, request);
         final byte[] response = requestReader.readRequest(inputStreamFromRemote);
 
-  //      todo: a separate class
-        final List<Filter> withFilters = requiredFiltersFor(request);
-        final byte[] augmented = augment(request, response, withFilters);
+        final byte[] augmented = augmenter.augment(request, response);
 
         returnResponse(augmented, proxyClientConnection);
         System.out.println("done.");
@@ -74,31 +73,5 @@ public class RequestRunnable implements Runnable {
     serverOut.flush();
 
     return new BufferedInputStream(socket.getInputStream());
-  }
-
-
-  /**
-   * Augments the response from request using filters.  If no filters
-   * express interest, response is returned unchanged.
-   *
-   * @param request
-   * @param response
-   * @param filters
-   * @return the response augmented by all filters.
-   */
-  private byte[] augment(Request request, byte[] response, List<Filter> filters) {
-    byte[] currentResponse = response;
-    for (Filter filter : filters) {
-      currentResponse = filter.augment(request, currentResponse);
-    }
-    return currentResponse;
-  }
-
-  private List<Filter> requiredFiltersFor(Request request) {
-    final List<Filter> required = new ArrayList<Filter>();
-    for (Filter filter : filters) {
-      if (filter.matches(request)) required.add(filter);
-    }
-    return required;
   }
 }

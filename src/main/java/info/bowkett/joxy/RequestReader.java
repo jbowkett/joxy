@@ -1,5 +1,6 @@
 package info.bowkett.joxy;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,18 +15,18 @@ public class RequestReader {
   private static final int BUFFER_SIZE = 32768;
 
   public byte [] readRequest(InputStream incomingInputStream) throws IOException {
-    byte [] request = new byte[0];
     try {
-      final byte[] buffer = new byte[BUFFER_SIZE];
+      final byte[] readBuffer = new byte[BUFFER_SIZE];
+
+      final ByteArrayOutputStream bufferToReturn = new ByteArrayOutputStream();
+
       int bytesRead;
 
-      do{
-        bytesRead = incomingInputStream.read(buffer, 0, BUFFER_SIZE);
-        request = appendBuffer(request, buffer, bytesRead);
+      while((bytesRead = incomingInputStream.read(readBuffer)) >= 0 ){
+        bufferToReturn.write(readBuffer, 0, bytesRead);
       }
-      while (bytesRead != -1 && bytesRead == BUFFER_SIZE);
-
-      return request;
+      bufferToReturn.flush();
+      return bufferToReturn.toByteArray();
     }
     catch (IOException e) {
       System.out.println("Cannot read from socket:" + e.getMessage());
@@ -33,19 +34,10 @@ public class RequestReader {
     }
     finally {
       try {
-        if (incomingInputStream != null) incomingInputStream.close();
+//        if (incomingInputStream != null) incomingInputStream.close();
       }
       catch (Exception e) {
       }//do nothing as closing
     }
-  }
-
-  private byte[] appendBuffer(byte[] previouslyBuffered, byte[] bufferToAppend, int bytesRead) {
-    byte[] expandedBuffer = previouslyBuffered;
-    if(bytesRead > -1) {
-      expandedBuffer = new byte[previouslyBuffered.length + bytesRead];
-      System.arraycopy(bufferToAppend, 0, expandedBuffer, previouslyBuffered.length, bytesRead);
-    }
-    return expandedBuffer;
   }
 }

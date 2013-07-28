@@ -20,11 +20,30 @@ public class RequestParser {
     for (String line : lines) {
       parseLine(values, line);
     }
+    parseFirstLine(values, lines[0], request);
 
-    return new Request(values.get("GET"), values.get("PROXY-CONNECTION"),
+    return new Request(values.get("METHOD"), values.get("DESTINATION"), 
+      values.get("HTTP-VERSION"), values.get("HOST"), values.get("PROXY-CONNECTION"),
       values.get("CACHE-CONTROL"), values.get("ACCEPT"), values.get("USER-AGENT"),
       values.get("ACCEPT-ENCODING"), values.get("ACCEPT-LANGUAGE"),
-      values.get("COOKIE"));
+      values.get("COOKIE"), request);
+  }
+
+  private void parseFirstLine(Map<String, String> values, String line, String request) {
+    final String [] components = line.split(" ");
+    if(components.length >= 1) values.put("METHOD", components[0]);
+    if(components.length >= 2) values.put("DESTINATION", toDestination(components[1]));
+    if(components.length >= 3) values.put("HTTP-VERSION", components[2]);
+
+    if(components.length < 3){
+      System.out.println("request = " + request);
+    }
+  }
+
+  private String toDestination(String raw) {
+    final String noHttp = raw.replaceAll("http://", "");
+    final int index = noHttp.indexOf('/');
+    return index < 0 ? noHttp : noHttp.substring(0, index);
   }
 
   private void parseLine(Map<String, String> values, String line) {

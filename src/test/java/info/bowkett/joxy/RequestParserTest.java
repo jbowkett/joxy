@@ -32,9 +32,27 @@ public class RequestParserTest {
 
 
   @Test
+  public void testParseMethod() throws Exception{
+    final String actualMethod = parser.parseRequest(EXAMPLE_REQUEST).getMethod();
+    assertEquals("GET", actualMethod);
+  }
+
+  @Test
+  public void testParseDestination() throws Exception{
+    final String destination = parser.parseRequest(EXAMPLE_REQUEST).getDestination();
+    assertEquals("bbc.co.uk", destination);
+  }
+
+  @Test
+  public void testParseHttpVersion() throws Exception{
+    final String httpVersion = parser.parseRequest(EXAMPLE_REQUEST).getHttpVersion();
+    assertEquals("HTTP/1.1", httpVersion);
+  }
+
+  @Test
   public void testParseRequestHost() throws Exception{
     final String actualHost = parser.parseRequest(EXAMPLE_REQUEST).getHost();
-    assertEquals("http://bbc.co.uk/", actualHost);
+    assertEquals("bbc.co.uk", actualHost);
   }
 
   @Test

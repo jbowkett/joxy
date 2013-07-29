@@ -39,8 +39,9 @@ public class ServerStartupStepDefs {
       .build();
     try {
       driverService.start();
-    } catch (IOException e) {
-      System.err.println("Cannot start driver: "+e.getMessage());
+    }
+    catch (IOException e) {
+      System.err.println("Cannot start driver: " + e.getMessage());
       e.printStackTrace(System.err);
     }
   }
@@ -64,40 +65,60 @@ public class ServerStartupStepDefs {
     driver = new RemoteWebDriver(driverService.getUrl(), capabilities);
   }
 
-  @Then("^I will see that website in the browser$")
-  public void I_will_see_that_website_in_the_browser() throws Throwable {
-    final String title = driver.getTitle();
-    //todo: need a much better assertion here - document not null, or check the specific title
-    Assert.assertNotNull(title);
-  }
-
   @Given("^a joxy server is started with a title augmenter$")
   public void a_joxy_server_is_started_with_a_title_augmenter() throws Throwable {
-    // Express the Regexp above with the code you wish you had
-    throw new PendingException();
+    server = new Server(PROXY_SERVER_PORT, new RequestServicer(5, new RequestReader(), new RequestParser(), new Augmenter(new Filter[]{
+      new Filter(){
+
+        public boolean matches(Request request) {
+          return true;
+        }
+
+        public byte[] augment(Request request, byte[] response) {
+          final String augmented = new String(response);
+          return augmented.replaceAll("<title>.*</title>|<TITLE>.*</TITLE>", "<title> joxy </title>").getBytes();
+        }
+      }
+    })));
+    server.start();
   }
 
-  @Then("^I will see a message in the html title$")
-  public void I_will_see_a_message_in_the_html_title() throws Throwable {
-    // Express the Regexp above with the code you wish you had
-    throw new PendingException();
+  @Then("^I will see \"([^\"]*)\" in the html title$")
+  public void I_will_see_in_the_html_title(String arg1) throws Throwable {
+    final String title = driver.getTitle();
+    Assert.assertTrue("Expectation not met : Expected title :[" + title +
+      "] to contain :[" + arg1 + "]", title.contains(arg1));
   }
 
   @Given("^a joxy server is started with an adult content URL filter$")
   public void a_joxy_server_is_started_with_an_adult_content_URL_filter() throws Throwable {
-    // Express the Regexp above with the code you wish you had
-    throw new PendingException();
+    server = new Server(PROXY_SERVER_PORT, new RequestServicer(5, new RequestReader(), new RequestParser(), new Augmenter(new Filter[]{
+      new Filter(){
+
+        public boolean matches(Request request) {
+          return true;
+        }
+
+        public byte[] augment(Request request, byte[] response) {
+          if(!banned(request)) return response;
+
+          return ("HTTP/1.0 405\nContent Type: html\n\n"+
+            "<html><head><title>Forbidden by joxy</title></head>" +
+            "<body><h1>Forbidden by joxy</h1></body></html>").getBytes();
+        }
+
+        private boolean banned(Request request) {
+          //ban the whole internet!
+          return true;
+        }
+      }
+    })));
+    server.start();
   }
 
   @When("^I navigate to \"([^\"]*)\"$")
   public void I_navigate_to(String url) throws Throwable {
     driver.get(url);
-  }
-
-  @Then("^I will see a permission denied message$")
-  public void I_will_see_a_permission_denied_message() throws Throwable {
-    // Express the Regexp above with the code you wish you had
-    throw new PendingException();
   }
 
   @After
